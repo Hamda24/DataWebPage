@@ -305,7 +305,7 @@
     
             setTimeout(() => {
                 notification.style.display = "none";
-            }, 2000); // Hide after 3 seconds
+            }, 3000); // Hide after 3 seconds
         }
 
      form.addEventListener("submit", function(event){
@@ -346,7 +346,7 @@
         
         let csrftoken=document.querySelector('[name=csrfmiddlewaretoken]').value;
         
-        fetch("{% url 'upload' %}",{
+        fetch("/upload/",{
             method: "POST",
             body: DataForm,
             headers:{
@@ -359,7 +359,7 @@
              showNotification("Files processed successfully! Click to download.", "success");
              setTimeout(() => {
              window.location.href = data.download_url;
-            }, 1000);
+            }, 2000);
         } else {
              showNotification(data.error || "Processing failed.", "error");
         }
