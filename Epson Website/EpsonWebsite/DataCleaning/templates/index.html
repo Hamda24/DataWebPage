@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpsonWebsite</title>
+
+   <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #eef2f3, #d6eaf8);
+        color: #333;
+        text-align: center;
+        padding: 30px;
+    }
+    
+    /* Header */
+    h1 {
+        font-size: 2.8rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    
+    /* Introduction Section */
+    .intro {
+        background: white;
+        padding: 30px;
+        margin: 20px auto;
+        max-width: 800px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: left;
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .intro:hover {
+        transform: scale(1.02);
+    }
+    
+    .intro p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+    
+    .intro ol {
+        padding-left: 25px;
+    }
+    
+    .intro li {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+    
+    /* Upload Section */
+    h2 {
+        margin-top: 30px;
+        font-size: 2.2rem;
+        color: #34495e;
+    }
+    
+    /* Form Container */
+    .form-container {
+        background: white;
+        padding: 30px;
+        max-width: 650px;
+        margin: 30px auto;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* File Upload Section */
+    .file-upload {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    
+    .file-box {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 15px;
+    }
+    
+    .file-box label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #2c3e50;
+    }
+    
+    /* Input Fields */
+    input[type="file"], input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: white;
+        transition: border 0.3s ease-in-out, box-shadow 0.3s;
+        outline: none;
+    }
+    
+    input[type="file"]:hover, input[type="date"]:hover,
+    input[type="file"]:focus, input[type="date"]:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    }
+    
+    /* Button Styling */
+    button {
+        padding: 15px;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        width: 100%;
+        font-weight: bold;
+    }
+    
+    button:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+        transform: scale(1.05);
+    }
+    
+    /* Notification Message */
+    #notification {
+        margin-top: 15px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #d63031;
+    }
+    
+    /* Download Link */
+    a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+    
+    a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    .date-filter-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .date-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .date-box label {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+    
+    .date-box input {
+        width: 200px;
+        padding: 12px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+        background: white;
+        transition: border 0.3s, box-shadow 0.3s;
+        outline: none;
+        text-align: center;
+    }
+    
+    .date-box input:hover,
+    .date-box input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    }
+
+     /* Notification Popup */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ff4d4d; /* Default red for error */
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        display: none;
+        z-index: 1000;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+/* Success notification */
+    .notification.success {
+       background: #28a745; /* Green for success */
+    }
+
+/* Fade-in animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 600px) {
+        .date-filter-container {
+            flex-direction: column;
+            gap: 10px;
+        }
+    
+        .date-box input {
+            width: 100%;
+        }
+    }
+    
+    /* Responsive Design */
+    @media (min-width: 768px) {
+        .file-upload {
+            flex-wrap: nowrap;
+        }
+    
+        .file-box {
+            width: 48%;
+        }
+    }
+    </style>
+    
+</head>
+<body>
+    <h1>Welcome to the DataCleaning Webpage</h1>
+    <div class="intro">
+        <p>
+            Managing and analyzing social media campaign data can be complex, especially when adjustments are needed to align with business goals. This website simplifies the process by automating data cleaning and adjustment, ensuring accurate and structured reporting for EPSON campaigns.
+        </p>
+        <ol id="steps">
+
+            <li><b>Upload Your Data</b> – Provide two Excel sheets: raw campaign data and adjustment values.</li>
+            <li><b>Automated Data Cleaning</b> – The system processes and cleans the data using predefined rules.</li>
+            <li><b>Smart Adjustments</b> – The platform applies necessary modifications based on media team inputs.</li>
+            <li><b>Download Clean Data</b> – Get the final adjusted Excel sheet, ready for reporting and analysis.</li>
+
+    </div>
+    <h2>Upload Excel Files For Cleaning</h2>
+    <div class="date-filter-container">
+        <div class="date-box">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+        </div>
+    
+        <div class="date-box">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+        </div>
+    </div>
+
+    <form id="uploadform" enctype="multipart/form-data">
+        {% csrf_token %}
+       <div class="file-upload">
+                <div class="file-box">
+                    <label for="file1">Raw Campaign Data</label>
+                    <input type="file" id="file1" name="file1" accept=".csv, .xls, .xlsx" required>
+                </div>
+                <div class="file-box">
+                    <label for="file2">Adjustment Values</label>
+                    <input type="file" id="file2" name="file2" accept=".csv, .xls, .xlsx" required>
+                </div>
+            </div>
+            <button type="submit">Upload and Clean</button>
+            <div id="notification" class="notification"></div>
+    </form>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("uploadform");
+        const notification = document.getElementById("notification");
+    
+        function showNotification(message, type = "error") {
+            notification.innerText = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = "block";
+    
+            setTimeout(() => {
+                notification.style.display = "none";
+            }, 3000); // Hide after 3 seconds
+        }
+
+     form.addEventListener("submit", function(event){
+        event.preventDefault();
+
+        
+        let file1 = document.getElementById("file1").files[0];
+        let file2 = document.getElementById("file2").files[0];
+        let startDate = document.getElementById("start_date").value;
+        let endDate = document.getElementById("end_date").value;
+        
+        
+
+       console.log("File 1:", file1 ? file1.name : "No file selected");
+       console.log("File 2:", file2 ? file2.name : "No file selected");
+
+       if (!file1 || !file2 || !startDate || !endDate) {
+        showNotification("Please select both files and a valid date range!", "error");
+            return;
+    }
+        let allowedFiles= ["csv", "xls", "xlsx"];
+
+        function validatefile(file){
+            if(!file) return false;
+            let fileExtension = file.name.split('.').pop().toLowerCase().trim();
+            return allowedFiles.includes(fileExtension);
+        }
+
+        if (!validatefile(file1) || !validatefile(file2)) {
+            showNotification("Only .csv, .xls, or .xlsx files are allowed!", "error");
+            return;
+        }
+
+        let DataForm=new FormData();
+        DataForm.append("file1", file1);
+        DataForm.append("file2", file2);
+        DataForm.append("date_range", JSON.stringify([startDate, endDate]));
+        
+        let csrftoken=document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch("/upload/",{
+            method: "POST",
+            body: DataForm,
+            headers:{
+                "X-CSRFTOKEN": csrftoken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+             if (data.success) {
+             showNotification("Files processed successfully! Click to download.", "success");
+             setTimeout(() => {
+             window.location.href = data.download_url;
+            }, 2000);
+        } else {
+             showNotification(data.error || "Processing failed.", "error");
+        }
+    })
+        .catch(error => {
+         showNotification("An error occurred. Please try again.", "error");
+         console.error("Error:", error);
+         });
+     });
+});
+</script>
+</html>
