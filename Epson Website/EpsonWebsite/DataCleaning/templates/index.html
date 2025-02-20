@@ -295,80 +295,76 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("uploadform");
-        const notification = document.getElementById("notification");
-    
-        function showNotification(message, type = "error") {
-            notification.innerText = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = "block";
-    
-            setTimeout(() => {
-                notification.style.display = "none";
-            }, 3000); // Hide after 3 seconds
-        }
+      const form = document.getElementById("uploadform");
+      const notification = document.getElementById("notification");
 
-     form.addEventListener("submit", function(event){
+      function showNotification(message, type = "error") {
+        notification.innerText = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = "block";
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 3000);
+      }
+
+      form.addEventListener("submit", function(event) {
         event.preventDefault();
-
-        
         let file1 = document.getElementById("file1").files[0];
         let file2 = document.getElementById("file2").files[0];
         let startDate = document.getElementById("start_date").value;
         let endDate = document.getElementById("end_date").value;
-        
-        
 
-       console.log("File 1:", file1 ? file1.name : "No file selected");
-       console.log("File 2:", file2 ? file2.name : "No file selected");
-
-       if (!file1 || !file2 || !startDate || !endDate) {
-        showNotification("Please select both files and a valid date range!", "error");
-            return;
-    }
-        let allowedFiles= ["csv", "xls", "xlsx"];
-
-        function validatefile(file){
-            if(!file) return false;
-            let fileExtension = file.name.split('.').pop().toLowerCase().trim();
-            return allowedFiles.includes(fileExtension);
+        if (!file1 || !file2 || !startDate || !endDate) {
+          showNotification("Please select both files and a valid date range!", "error");
+          return;
         }
 
-        if (!validatefile(file1) || !validatefile(file2)) {
-            showNotification("Only .csv, .xls, or .xlsx files are allowed!", "error");
-            return;
+        let allowedFiles = ["csv", "xls", "xlsx"];
+        function validateFile(file) {
+          if (!file) return false;
+          let fileExtension = file.name.split('.').pop().toLowerCase().trim();
+          return allowedFiles.includes(fileExtension);
+        }
+        if (!validateFile(file1) || !validateFile(file2)) {
+          showNotification("Only .csv, .xls, or .xlsx files are allowed!", "error");
+          return;
         }
 
-        let DataForm=new FormData();
+        let DataForm = new FormData();
         DataForm.append("file1", file1);
         DataForm.append("file2", file2);
         DataForm.append("date_range", JSON.stringify([startDate, endDate]));
-        
-        let csrftoken=document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        fetch("/upload/",{
-            method: "POST",
-            body: DataForm,
-            headers:{
-                "X-CSRFTOKEN": csrftoken
-            }
+
+        let csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("/upload/", {
+          method: "POST",
+          body: DataForm,
+          headers: {
+            "X-CSRFToken": csrftoken
+          }
         })
-        .then(response => response.json())
-        .then(data => {
-             if (data.success) {
-             showNotification("Files processed successfully! Click to download.", "success");
-             setTimeout(() => {
-             window.location.href = data.download_url;
-            }, 2000);
-        } else {
-             showNotification(data.error || "Processing failed.", "error");
-        }
-    })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Processing failed.");
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = "Adjusted_Data.csv";
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          showNotification("File downloaded successfully!", "success");
+        })
         .catch(error => {
-         showNotification("An error occurred. Please try again.", "error");
-         console.error("Error:", error);
-         });
-     });
-});
-</script>
+          showNotification("An error occurred. Please try again.", "error");
+          console.error("Error:", error);
+        });
+      });
+    });
+  </script>
 </html>
